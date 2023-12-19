@@ -108,7 +108,7 @@ public class UserController {
      * @return
      * @throws Exception
      */
-    @Secured("ROLE_USER")  // 임시로 관리자 권한만 주자~ 관리자 권한이 없으면 탈퇴 못함~
+    @Secured("ROLE_USER")
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> destroy(@PathVariable("userId") String userId) throws Exception {
         log.info("[DELETE] - /users/{userId}");
