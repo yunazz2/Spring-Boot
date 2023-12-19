@@ -72,11 +72,15 @@ public class BoardServiceImpl implements BoardService {
             // c:/upload/UID_강아지.png
             String filePath = uploadPath + "/" + fileName;
 
-            // 파일 업로드
+            // 파일업로드
             // - 서버 측, 파일 시스템에 파일 복사
-            // - DB에 파일 정보 등록
+            // - DB 에 파일 정보 등록
             File uploadFile = new File(uploadPath, fileName);
-            FileCopyUtils.copy(fileData, uploadFile);           // 파일 업로드
+            FileCopyUtils.copy(fileData, uploadFile);       // 파일 업로드
+
+            // FileOutputStream fos = new FileOutputStream(uploadFile);
+            // fos.write(fileData);
+            // fos.close();
 
             Files uploadedFile = new Files();
             uploadedFile.setParentTable(parentTable);
@@ -88,7 +92,6 @@ public class BoardServiceImpl implements BoardService {
             uploadedFile.setFileCode(0);
 
             fileMapper.insert(uploadedFile);
-
         }
 
         return result;
