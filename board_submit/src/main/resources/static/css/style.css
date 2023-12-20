@@ -1,0 +1,8 @@
+* {
+    margin: 0 auto;
+}
+
+.pagenation {
+    display: flex;
+    border: 1px solid red;
+}
