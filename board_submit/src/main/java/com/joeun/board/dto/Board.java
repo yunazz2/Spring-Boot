@@ -20,6 +20,7 @@ public class Board {
     private Date regDate;
     private Date updDate;
     private int views;
+    private int like;
 
     private List<MultipartFile> file;
 }

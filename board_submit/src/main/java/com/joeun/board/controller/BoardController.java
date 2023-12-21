@@ -54,26 +54,30 @@ public class BoardController {
      * @throws Exception
      */
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(defaultValue = "1") int page) throws Exception {
+    public String list(Model model, @RequestParam(defaultValue = "1") int pageNo) throws Exception {
+        // 현재 페이지 번호를 기본 1로 설정하여 시작하고, 페이지를 이동할 때 마다 파라미터로 값을 받음
+        
         log.info("[GET] - /board/list");
 
-        int pageSize = 2; // 한 페이지에 보여줄 게시글 수
-        Page pageRequest = new Page();
-        pageRequest.setPage(page);
-        pageRequest.setSize(pageSize);
+        int pageSize = 2;                                                   // 한 페이지에 보여줄 게시글 수
 
-        int totalPosts = boardService.countTotalPosts();
-        int totalPages = (int) Math.ceil((double) totalPosts / pageSize);
+        Page pageDto = new Page();                                          // Page.dto를 객체로 생성
+
+        pageDto.setPageNo(pageNo);                                          // Page.dto의 page 변수에 현재 페이지 번호를 세팅
+        pageDto.setSize(pageSize);                                          // Page.dto의 pageSize 변수에 한 페이지에 보여줄 게시글 수를 세팅
+
+        int totalPosts = boardService.countTotalPosts();                    // Mapper를 통해 DB상의 전체 게시글 수를 조회
+        int totalPages = (int) Math.ceil((double) totalPosts / pageSize);   // (전체 게시글 수 / 한 페이지에 보여줄 게시글 수) 계산
         
-        List<Board> boardList = boardService.list(pageRequest);
-
+        List<Board> boardList = boardService.list(pageDto);                 // boardService로 게시글 목록 조회 메소드에 Page.dto를 넘김
+        
+        log.info("확인쓰 : " + pageDto);
         model.addAttribute("boardList", boardList);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", totalPages);
 
         return "board/list";
     }
-
 
 
     /**
@@ -117,6 +121,7 @@ public class BoardController {
         return "board/insert";
     }
     
+
     /**
      * 게시글 쓰기 처리
      * [POST]
@@ -139,6 +144,7 @@ public class BoardController {
         return "redirect:/board/list";
     }
     
+
     /**
      * 게시글 수정
      * [GET]
@@ -158,6 +164,8 @@ public class BoardController {
         // 뷰 페이지 지정
         return "board/update";
     }
+
+
     /**
      * 게시글 수정 처리
      * [POST]
@@ -179,6 +187,7 @@ public class BoardController {
         // 뷰 페이지 지정
         return "redirect:/board/list";
     }
+
 
     /**
      * 게시글 삭제 처리

@@ -19,10 +19,10 @@ public interface BoardService {
     public int delete(int boardNo) throws Exception;
 
     // 게시글 목록(페이징 처리)
-    List<Board> list(Page page) throws Exception;
+    public List<Board> list(Page page) throws Exception;
 
     // 게시글 총 개수
-    int countTotalPosts() throws Exception;
+    public int countTotalPosts() throws Exception;
     
 }
  
