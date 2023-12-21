@@ -59,6 +59,16 @@
             "projectName": "shop",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BoardApplication<board_submit>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.joeun.board.BoardApplication",
+            "projectName": "board_submit",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
