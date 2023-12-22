@@ -4,20 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판 프로젝트</title>
-	<link rel="stylesheet" href="../static/css/style.css">
+	<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <h1>게시판 프로젝트</h1>
-	<h2>SPRING BOOT</h2>
-	<ul>
-		<li>SPRING BOOT 2.7.7</li>
-		<li>MySQL 8.0</li>
-		<li>Mybatis 3.0</li>
-		<li>Thymeleaf</li>
-	</ul>
+	<div class="container">
+		<h1 class="title">게시판 프로젝트</h1>
+		<br>
+		<h2 class="title">SPRING BOOT</h2>
+		<br>
+		<ul>
+			<li>SPRING BOOT 2.7.7</li>
+			<li>MySQL 8.0</li>
+			<li>Mybatis 3.0</li>
+			<li>Thymeleaf</li>
+		</ul>
+		
+		<h3 th:text="${author}"></h3>
 	
-	<h3 th:text="${author}"></h3>
-
-	<a href="/board/list">게시판</a>
+		<div class="go_to_board">
+			<a href="/board/list">게시판</a>
+		</div>
+	</div>
 </body>
 </html>
