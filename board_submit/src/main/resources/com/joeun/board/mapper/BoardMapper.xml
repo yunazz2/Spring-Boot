@@ -61,4 +61,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM board
     </select>
 
+    <!-- 좋아요 수 증가 -->
+    <update id="increaseLikeCount">
+        UPDATE board
+        SET `like` = `like` + 1
+        WHERE board_no = #{boardNo}
+    </update>
+
+    <!-- 좋아요 수 조회 -->
+    <select id="selectLikeCount" resultType="int">
+        SELECT `like`
+        FROM board
+        WHERE board_no = #{boardNo}
+    </select>
+
+
 </mapper>

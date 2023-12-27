@@ -3,6 +3,8 @@ package com.joeun.board.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.joeun.board.dto.Board;
 import com.joeun.board.dto.Files;
@@ -98,8 +101,10 @@ public class BoardController {
 
         files.setParentTable("board");
         files.setParentNo(boardNo);
-        List<Files> fileList = fileService.listByParent(files); // 파일 정보
+        List<Files> fileList = fileService.listByParent(files); // 파일 정보        
 
+        int firstFileNo = fileList.get(0).getFileNo();
+        files.setFileNo(firstFileNo);
 
         // 모델 등록
         model.addAttribute("board", board);
@@ -107,6 +112,30 @@ public class BoardController {
 
         // 뷰 페이지 지정
         return "board/read";
+    }
+
+
+    /**
+     * 게시글 좋아요 증가 처리
+     * [POST]
+     * /board/like
+     * @param boardNo 게시글 번호
+     * @throws Exception
+     */
+    @PostMapping("/like")
+    @ResponseBody // 이 어노테이션을 사용하여 컨트롤러가 JSON 또는 데이터를 반환하도록 설정합니다.
+    public int increaseLikes(@RequestParam("boardNo") int boardNo) throws Exception {
+        log.info("[POST] - /board/like");
+
+        int result = boardService.increaseLikeCount(boardNo);
+        // 좋아요 수 조회
+        
+        if (result > 0) {
+            // 성공적으로 처리된 경우
+            int like = boardService.selectLikeCount(boardNo);
+            return like;
+        }
+        return result;
     }
 
 

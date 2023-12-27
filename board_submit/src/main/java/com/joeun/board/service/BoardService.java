@@ -23,6 +23,12 @@ public interface BoardService {
 
     // 게시글 총 개수
     public int countTotalPosts() throws Exception;
+
+    // 좋아요 수 증가
+    public int increaseLikeCount(int boardNo) throws Exception;
+
+    // 좋아요 수 조회
+    public int selectLikeCount(int boardNo) throws Exception;
     
 }
  

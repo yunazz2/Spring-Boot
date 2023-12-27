@@ -11,93 +11,92 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 </head>
 <body>
-	<h1 class="title">게시글 조회</h1>
-	
-	<form action="/board/delete" method="post" id="form">
-	
-		<input type="hidden" name="boardNo" th:value="${board.boardNo}" readonly>
+	<div class="container">
 		
-		<table>
-			<tr>
-				<td>제목</td>
-				<td>
-					<input type="text" name="title" th:value="${board.title}" readonly>
-				</td>
-			</tr>
-			<tr>
-				<td>작성자</td>
-				<td>
-					<input type="text" name="writer" th:value="${board.writer}" readonly>
-				</td>
-			</tr>
-			<tr>
-				<td>내용</td>
-				<td>
-					<textarea rows="10" cols="40" name="content" th:text="${board.content}" readonly></textarea>
-				</td>
-			</tr>
-		</table>
-	
-	</form>
-	
-	<!-- 댓글 목록 -->
-	<div id="reply_list">
-		<!-- 
-		<th:block th:each=" reply : ${replyList} ">
-			<div class="reply_wrap">
-				<th:block th:if="${reply.replyNo != reply.groupNo}">
-					<th:block th:each=" no : ${ #numbers.sequence(1, reply.depthNo) }">
-						<div class="indent"></div>
-					</th:block>
-				</th:block>
+
+		<h1 class="title">게시글 조회</h1>
+		
+		<form action="/board/delete" method="post" id="form">
+		
+			<input type="hidden" name="boardNo" th:value="${board.boardNo}" readonly>
 			
-				<div th:class="reply_box">
-					<span class="reply_writer" th:text="${reply.writer}"></span>
-					<span class="reply_date" th:text="${reply.regDate}"></span>
-					<button type="button" class="btn_reply_update" th:data="${reply.replyNo}">수정</button>
-					<button type="button" class="btn_reply_delete" th:data="${reply.replyNo}">삭제</button>
-					<p class="reply_content" th:text="${reply.content}"></p>
+			<table>
+				<tr>
+					<td>제목</td>
+					<td>
+						<input type="text" name="title" th:value="${board.title}" readonly>
+					</td>
+				</tr>
+				<tr>
+					<td>작성자</td>
+					<td>
+						<input type="text" name="writer" th:value="${board.writer}" readonly>
+					</td>
+				</tr>
+				<tr>
+					<td>내용</td>
+					<td>
+						<textarea rows="10" cols="40" name="content" th:text="${board.content}" readonly></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td>파일</td>
+					<td>
+						<ul>
+							<th:block th:each="file : ${fileList}">
+								<li>
+									<!-- 파일 다운로드 -->
+									<a th:href="|/file/${file.fileNo}|" th:text="${file.originName}"></a>         
+									<button type="button" class="btn-file-delete" th:data="${file.fileNo}">삭제</button>
+								</li>
+							</th:block>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</form>
+
+		<!-- 좋아요 버튼 -->
+		<span id="likeCount" th:text="${board.like}"></span> / <button id="likeButton">좋아요</button>
+		
+		<!-- 댓글 목록 -->
+		<div id="reply_list">
+
+		</div>
+
+		<!-- 댓글 입력 -->
+		<div class="reply_txt">
+			<div class="top">
+				<h3>댓글 작성</h3>
+			</div>
+			<div class="reply_input">
+				<input type="text" name="replyWriter" id="replyWriter" class="writer" 
+					placeholder="작성자">
+				<br>
+				<textarea name="replyContent" id="replyContent" rows="5" cols="60" 
+						placeholder="댓글 작성해주세요."></textarea>
+				<div class="btn_area">
+					<button type="button" id="btn_reply_insert" class="btn_reply">등록</button>
 				</div>
 			</div>
-		</th:block>
-		 -->
-	</div>
-
-	<!-- 댓글 입력 -->
-	<div class="reply_txt">
-		<div class="top">
-			<h3>댓글</h3>
-		</div>
-		<div class="reply_input">
-			<input type="text" name="replyWriter" id="replyWriter" class="writer" 
-				   placeholder="작성자">
 			<br>
-			<textarea name="replyContent" id="replyContent" rows="5" cols="60" 
-					  placeholder="댓글 작성해주세요."></textarea>
-			<div class="btn_area">
-				<button type="button" id="btn_reply_insert" class="btn_reply">등록</button>
-			</div>
 		</div>
-		<br>
+		
+		
+		<!-- 게시글 컨트롤 버튼 -->
+		<div>
+			<button type="button" onclick="moveList()">목록</button>
+			<button type="button" onclick="moveUpdate()">수정</button>
+			<button type="button" onclick="boardDelete()">삭제</button>
+		</div>
+		
 	</div>
-	
-	
-	
-	<!-- 버튼 -->
-	<div>
-		<button type="button" onclick="moveUpdate()">수정</button>
-		<button type="button" onclick="boardDelete()">삭제</button>
-		<button type="button" onclick="moveList()">목록</button>
-	</div>
-	
-	
-	
-	
 	
 	<script>
 	
 		let form = document.getElementById("form")
 		let boardNo = "[[${board.boardNo}]]"
+		let btnFileDelete = document.querySelectorAll(".btn-file-delete")
 		
 		// 문서 준비 이벤트
 		$(function() {
@@ -109,6 +108,36 @@
 			addEvent()
 
 		})
+
+		// 파일 삭제 버튼 클릭 이벤트
+        for (let i = 0; i < btnFileDelete.length; i++) {
+            
+            btnFileDelete[i].addEventListener('click', function() {
+                let btn = this
+                let fileNo = this.getAttribute('data')
+                
+                let data = { 
+
+                    fileNo : fileNo
+                }
+
+                let request = new XMLHttpRequest()
+
+                request.open('DELETE', '/file', true)
+                request.send(data)
+
+                request.onreadystatechange = function() {
+                    
+                    // 요청 성공 시,
+                    if(request.readyState == request.DONE && request.status == 200) {
+                        console.log('파일 삭제 성공');
+
+                        // 파일 항목 제거
+                        btn.parentNode.remove()
+                    }
+                }
+            })
+        }
 		
 		// 댓글 목록 가져오기
 		function replyList() {
@@ -118,7 +147,7 @@
 			}
 
 			$.ajax({
-				url:	'/reply/list',		// 요청 경로
+				url:	'/reply/list',			// 요청 경로
 				type:	'get',					// 메소드 방식(get, post, put 등)
 				data:  	reply,					// 전송할 데이터
 				dataType: "text",				
@@ -170,10 +199,10 @@
 
 		}
 		
-		
+
 		// 이벤트 등록
+		// 등록 버튼 클릭 이벤트
 		function addEvent() {
-			// 등록 버튼 클릭 이벤트
 			$('#btn_reply_insert').on('click', function() {
 				let writer = $('#replyWriter').val()
 				let content = $('#replyContent').val()
@@ -182,13 +211,13 @@
 			})
 			
 		}
-
-
-	
+		
+		// 게시글 수정 버튼 클릭 이벤트
 		function moveUpdate() {
 			location.href = "/board/update?boardNo=" + boardNo	
 		}
 		
+		// 게시글 삭제 버튼 클릭 이벤트
 		function boardDelete() {
 			let check = confirm("정말로 삭제하시겠습니까?")
 			if( check ) {
@@ -196,9 +225,36 @@
 			}
 		}
 		
+		// 게시글 목록 버튼 클릭 이벤트
 		function moveList() {
 			location.href = "/board/list"	
-		}	
+		}
+
+	
+		// 좋아요 버튼 클릭 이벤트
+		$('#likeButton').on('click', function() {
+			// 좋아요 수를 증가시키는 함수 호출
+			increaseLikes();
+		});
+
+		// 좋아요 수 증가 함수
+		function increaseLikes() {
+			$.ajax({
+				url: '/board/like',
+				type: 'post',
+				data: { boardNo: boardNo },
+				dataType: 'text',
+				success: function(response) {
+					// 받은 좋아요 수를 페이지에 반영
+					$('#likeButton').siblings('span').text(response);
+				},
+				error: function(xhr, status, error) {
+					alert('좋아요를 증가하는 중에 오류가 발생했습니다.');
+				},
+			});
+		}
+
+
 	</script>
 	
 	

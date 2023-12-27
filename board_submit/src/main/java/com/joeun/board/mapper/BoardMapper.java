@@ -25,10 +25,16 @@ public interface BoardMapper {
     public int maxPk() throws Exception;
 
     // 게시글 조회(페이징 처리)
-    List<Board> listWithPaging(@Param("startIdx") int startIdx, @Param("pageSize") int pageSize) throws Exception;
+    public List<Board> listWithPaging(@Param("startIdx") int startIdx, @Param("pageSize") int pageSize) throws Exception;
 
     // 게시글 총 개수
-    int countTotalPosts() throws Exception;
+    public int countTotalPosts() throws Exception;
+
+    // 좋아요 수 증가
+    public int increaseLikeCount(int boardNo) throws Exception;
+
+    // 좋아요 수 조회
+    public int selectLikeCount(int boardNo) throws Exception;
     
 }
 

@@ -24,6 +24,7 @@
 </head>
 <body>
 	<!-- 댓글 목록 -->
+	<h3>댓글 목록</h3>
 	<th:block th:each=" reply : ${replyList} ">
 		<div class="reply_wrap">
 			<th:block th:if="${reply.replyNo != reply.groupNo}">
@@ -151,7 +152,7 @@
 				let reply_writer = reply_box.children('.reply_writer').text()
 				let reply_content = reply_box.children('.reply_content').text()
 				
-				let editor = "" 
+				let editor = ""
 					+ "<div class='inner reply_answer'>"
 					+ "<input type='text' name='replyWriter' class='replyWriter'>"
 					+ "<br>"

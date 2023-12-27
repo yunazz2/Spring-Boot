@@ -120,6 +120,19 @@ public class BoardServiceImpl implements BoardService {
     public int countTotalPosts() throws Exception {
         return boardMapper.countTotalPosts();
     }
+
+    // 좋아요 수 증가
+    @Override
+    public int increaseLikeCount(int boardNo) throws Exception {
+        return boardMapper.increaseLikeCount(boardNo);
+    }
+
+    // 좋아요 수 조회
+    @Override
+    public int selectLikeCount(int boardNo) throws Exception {
+        return boardMapper.selectLikeCount(boardNo);
+    }
+
     
 }
   

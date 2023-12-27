@@ -54,9 +54,13 @@ public class FileController {
     @DeleteMapping("")
     // public ResponseEntity<String> deleteFile(@RequestBody Files file) throws Exception {
     public ResponseEntity<String> deleteFile(Files file) throws Exception {
+        
         log.info("[DELETE] - /file");
+
         int fileNo = file.getFileNo();
+
         log.info("fileNo : " + fileNo);
+
         if( fileNo == 0 )
             return new ResponseEntity<String>("FAIL", HttpStatus.BAD_REQUEST);       
 
