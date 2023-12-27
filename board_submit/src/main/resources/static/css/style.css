@@ -96,18 +96,19 @@ li {
 
 
 /* 댓글 */
-.comment_box {
+.indent { margin-left: 100px; }
+
+.reply_wrap {
     display: flex;
+}
+
+.reply_box .inner {
+    min-width: 500px;
+    max-width: 100vw;
+    padding: 20px;
     border: 1px solid black;
-    width: 300px;
-    height: auto;
 }
 
-.writer_box {
-    width: 100px;
-    height: auto;
-}
-
-.content_box {
-    width: 200px;
+.edit {
+    background-color: cornflowerblue;
 }

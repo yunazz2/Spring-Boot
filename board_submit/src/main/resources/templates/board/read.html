@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시글 조회</title>
+	<meta charset="UTF-8">
+	<title>게시글 조회</title>
 
     <!-- css -->
     <link rel="stylesheet" href="/css/style.css">
@@ -12,180 +11,123 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 </head>
 <body>
-    <div class="container">
+	<h1 class="title">게시글 조회</h1>
+	
+	<form action="/board/delete" method="post" id="form">
+	
+		<input type="hidden" name="boardNo" th:value="${board.boardNo}" readonly>
+		
+		<table>
+			<tr>
+				<td>제목</td>
+				<td>
+					<input type="text" name="title" th:value="${board.title}" readonly>
+				</td>
+			</tr>
+			<tr>
+				<td>작성자</td>
+				<td>
+					<input type="text" name="writer" th:value="${board.writer}" readonly>
+				</td>
+			</tr>
+			<tr>
+				<td>내용</td>
+				<td>
+					<textarea rows="10" cols="40" name="content" th:text="${board.content}" readonly></textarea>
+				</td>
+			</tr>
+		</table>
+	
+	</form>
+	
+	<!-- 댓글 목록 -->
+	<div id="reply_list">
+		<!-- 
+		<th:block th:each=" reply : ${replyList} ">
+			<div class="reply_wrap">
+				<th:block th:if="${reply.replyNo != reply.groupNo}">
+					<th:block th:each=" no : ${ #numbers.sequence(1, reply.depthNo) }">
+						<div class="indent"></div>
+					</th:block>
+				</th:block>
+			
+				<div th:class="reply_box">
+					<span class="reply_writer" th:text="${reply.writer}"></span>
+					<span class="reply_date" th:text="${reply.regDate}"></span>
+					<button type="button" class="btn_reply_update" th:data="${reply.replyNo}">수정</button>
+					<button type="button" class="btn_reply_delete" th:data="${reply.replyNo}">삭제</button>
+					<p class="reply_content" th:text="${reply.content}"></p>
+				</div>
+			</div>
+		</th:block>
+		 -->
+	</div>
 
-        <h1 class="title">게시글 조회</h1>
-
-        <br>
-        
-        <div class="read_box">
-            <form action="/board/delete" method="POST" id="form">
-                <input type="hidden" name="boardNo" th:value="${board.boardNo}">
-                <table class="read_table">
-                    <tr>
-                        <td class="read_table_title">제목</td>
-                        <td>
-                            <input type="text" name="title" th:value="${board.title}">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="read_table_title">작성자</td>
-                        <td>
-                            <input type="text" name="writer" th:value="${board.writer}">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="read_table_title">내용</td>
-                        <td>
-                            <textarea name="content" cols="40" rows="5" th:text="${board.content}"></textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="read_table_title">파일</td>
-                        <td>
-                            <ul>
-                                <!-- 파일 목록 -->
-                                <th:block th:each="file : ${fileList}">
-                                    <li>
-                                        <!-- 파일 다운로드 -->
-                                        <a th:href="|/file/${file.fileNo}|" th:text="${file.originName}"></a>         
-                                        <button type="button" class="btn-file-delete" th:data="${file.fileNo}">삭제</button>
-                                    </li>
-                                </th:block>
-                            </ul>
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-        <div class="btn_box">
-            <button type="button" onclick="moveList()">목록</button>
-            <button type="button" onclick="moveUpdate()">수정</button>
-            <button type="button" onclick="actionDelete()">삭제</button>
-        </div>
-
-        <!-- 댓글 -->
-        <div class="comment_input_box">
-            <div class="comment_top">
-                <h3>댓글 입력</h3>
-            </div>
-            <div class="comment_input">
-                <input type="text" name="writer" id="comment_writer" placeholder="작성자">
-                <br>
-                <textarea name="content" id="comment_content" 
-                          cols="60" rows="5" placeholder="댓글을 작성해주세요"></textarea>
-                <div class="comment_btn_box">
-                    <a href="javascript:;" id="btn_comment_insert">등록</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="comment_box" id="comment_list">
-            <div class="writer_box">
-
-            </div>
-            <div class="content_box">
-
-            </div>
-        </div>
-
-        <!-- <div class="comment_box" th:each="comment : ${commentList}">
-            <div class="writer_box">
-                <p>작성자</p>
-                <p th:text="${comment.writer}"></p>
-            </div>
-            <div class="content_box">
-                <p>내용</p>
-                <p th:text="${comment.content}"></p>
-            </div>
-        </div> -->
-    </div>
-
-    <script>
-        let form = document.getElementById('form')
-        // 👩‍💻 모델 객체를 자바스크립트에서 표현하는 방법
-        let boardNo = "[[${board.boardNo}]]"
-        let btnFileDelete = document.querySelectorAll(".btn-file-delete")
-
-        // 페이지 로드 시 댓글 목록 불러오기
+	<!-- 댓글 입력 -->
+	<div class="reply_txt">
+		<div class="top">
+			<h3>댓글</h3>
+		</div>
+		<div class="reply_input">
+			<input type="text" name="replyWriter" id="replyWriter" class="writer" 
+				   placeholder="작성자">
+			<br>
+			<textarea name="replyContent" id="replyContent" rows="5" cols="60" 
+					  placeholder="댓글 작성해주세요."></textarea>
+			<div class="btn_area">
+				<button type="button" id="btn_reply_insert" class="btn_reply">등록</button>
+			</div>
+		</div>
+		<br>
+	</div>
+	
+	
+	
+	<!-- 버튼 -->
+	<div>
+		<button type="button" onclick="moveUpdate()">수정</button>
+		<button type="button" onclick="boardDelete()">삭제</button>
+		<button type="button" onclick="moveList()">목록</button>
+	</div>
+	
+	
+	
+	
+	
+	<script>
+	
+		let form = document.getElementById("form")
+		let boardNo = "[[${board.boardNo}]]"
+		
 		// 문서 준비 이벤트
 		$(function() {
 
-            // 댓글 목록 가져오기
-            getCommentList()
+			// 댓글 목록 가져오기
+			replyList()
 
-        })
+			// 이벤트 등록
+			addEvent()
 
-        // 파일 삭제 버튼 클릭 이벤트
-        for (let i = 0; i < btnFileDelete.length; i++) {
-            
-            btnFileDelete[i].addEventListener('click', function() {
-                let btn = this
-                let fileNo = this.getAttribute('data')
-                
-                let data = { 
-                    fileNo : fileNo
-                }
-
-                let request = new XMLHttpRequest()
-
-                // DELETE 메소드로 Content-Type 지정 안 하면, 데이터가 body 담기지 않는다.
-                // - 쿼리스트링(요청 파라미터)에 데이터를 넘겨준다.
-                request.open('DELETE', '/file?fileNo=' + fileNo, true)
-                request.send( )
-
-                // DELETE 메소드로 Content-Type 지정하면, 데이터가 body 에 담긴다.
-                // request.open('DELETE', '/file' + fileNo, true)
-                // request.setRequestHeader("Content-Type", "application/json")
-                // request.send( JSON.stringify(data) )
-                
-                request.onreadystatechange = function() {
-
-                    // 요청 성공 시,
-                    if( request.readyState == request.DONE && request.status == 200 ) {
-                        console.log('파일 삭제 성공');
-                        // 파일 항목 제거
-                        btn.parentNode.remove()
-                    }
-                }
-            })
-        }
-        
-        // 목록으로 이동
-        function moveList() {
-            location.href = "/board/list"
-        }
-
-        // 수정으로 이동
-        function moveUpdate() {
-            location.href = "/board/update?boardNo=" + boardNo
-        }
-
-        // 삭제 요청
-        function actionDelete() {
-            let check = confirm('정말로 삭제하시겠습니까?')
-            if( check )
-                form.submit()
-        }
-
-        // 댓글 목록 가져오기
-		function getCommentList() {
+		})
+		
+		// 댓글 목록 가져오기
+		function replyList() {
 			
-			let comment = {
+			let reply = {
 				'boardNo' 	: boardNo,
 			}
 
 			$.ajax({
-				url:	'comment/list',		    // 요청 경로
+				url:	'/reply/list',		// 요청 경로
 				type:	'get',					// 메소드 방식(get, post, put 등)
-				data:  	comment,				// 전송할 데이터
+				data:  	reply,					// 전송할 데이터
 				dataType: "text",				
 
 				// 서버로부터 정상적인 응답
 				success: function(data) {
 					// 댓글 목록 갱신
-					$('#comment_list').empty()
-					$('#comment_list').append(data)
+					$('#reply_list').empty()
+					$('#reply_list').append(data)
 				},
 				// 에러
 				error: function(request, status, error) {
@@ -195,7 +137,70 @@
 			
 		}
 
+		// 댓글 등록
+		function insertReply( writer, content ) {
+			let reply = {
+				'boardNo' 	: boardNo,
+				'writer'	: writer,
+				'content' 	: content
+			}
 
-    </script>
+			$.ajax({
+				url:	'/reply/insert',		// 요청 경로
+				type:	'post',					// 메소드 방식(get, post, put 등)
+				data:  	reply,					// 전송할 데이터
+				dataType: "text",				
+
+				// 서버로부터 정상적인 응답
+				success: function(data) {
+					// 댓글 목록 갱신
+					$('#reply_list').empty()
+					$('#reply_list').append(data)
+					
+					// 작성한 댓글 내용 초기화
+					$('#replyWriter').val('')
+					$('#replyContent').val('')
+					
+				},
+				// 에러
+				error: function(request, status, error) {
+					alert('댓글 등록 중 에러가 발생하였습니다.')
+				},
+			})
+
+		}
+		
+		
+		// 이벤트 등록
+		function addEvent() {
+			// 등록 버튼 클릭 이벤트
+			$('#btn_reply_insert').on('click', function() {
+				let writer = $('#replyWriter').val()
+				let content = $('#replyContent').val()
+
+				insertReply( writer, content )
+			})
+			
+		}
+
+
+	
+		function moveUpdate() {
+			location.href = "/board/update?boardNo=" + boardNo	
+		}
+		
+		function boardDelete() {
+			let check = confirm("정말로 삭제하시겠습니까?")
+			if( check ) {
+				form.submit()
+			}
+		}
+		
+		function moveList() {
+			location.href = "/board/list"	
+		}	
+	</script>
+	
+	
 </body>
 </html>

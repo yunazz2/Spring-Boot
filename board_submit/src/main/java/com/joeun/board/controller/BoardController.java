@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.joeun.board.dto.Board;
-import com.joeun.board.dto.Comment;
 import com.joeun.board.dto.Files;
 import com.joeun.board.dto.Page;
 import com.joeun.board.service.BoardService;
-import com.joeun.board.service.CommentService;
 import com.joeun.board.service.FileService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,9 +44,6 @@ public class BoardController {
 
     @Autowired
     private FileService fileService;
-
-    @Autowired
-    private CommentService commentService;
 
     /**
      * 게시글 목록
@@ -105,12 +100,11 @@ public class BoardController {
         files.setParentNo(boardNo);
         List<Files> fileList = fileService.listByParent(files); // 파일 정보
 
-        // List<Comment> commentList = commentService.selectCommentList(boardNo);
 
         // 모델 등록
         model.addAttribute("board", board);
         model.addAttribute("fileList", fileList);
-        // model.addAttribute("commentList", commentList);
+
         // 뷰 페이지 지정
         return "board/read";
     }
